@@ -9,11 +9,11 @@
     "description": "Spiffy\\Mvc is a light-weight, HHVM compatible, and dependency lite MVC library.",
     "require": {
         "php": ">=5.4",
-        "spiffy/spiffy-dispatch": "dev-develop",
-        "spiffy/spiffy-event": "dev-develop",
-        "spiffy/spiffy-inject": "dev-develop",
-        "spiffy/spiffy-package": "dev-develop",
-        "spiffy/spiffy-route": "dev-develop"
+        "spiffy/spiffy-dispatch": "~1.0-dev",
+        "spiffy/spiffy-event": "~1.0-dev",
+        "spiffy/spiffy-inject": "~1.0-dev",
+        "spiffy/spiffy-package": "~1.0-dev",
+        "spiffy/spiffy-route": "~1.0-dev"
     },
     "require-dev": {
         "phpunit/phpunit": "~4.0",
