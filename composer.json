@@ -13,7 +13,9 @@
         "spiffy/spiffy-event": "~1.0-dev",
         "spiffy/spiffy-inject": "~1.0-dev",
         "spiffy/spiffy-package": "~1.0-dev",
-        "spiffy/spiffy-route": "~1.0-dev"
+        "spiffy/spiffy-route": "~1.0-dev",
+
+        "symfony/http-kernel": "~2.4"
     },
     "require-dev": {
         "phpunit/phpunit": "~4.0",
