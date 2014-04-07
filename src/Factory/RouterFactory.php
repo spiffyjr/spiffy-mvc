@@ -14,6 +14,23 @@ class RouterFactory implements ServiceFactory
      */
     public function createService(Injector $i)
     {
-        return new Router();
+        $routes = $i['spiffy.mvc']['routes'];
+        $r = new Router();
+
+        foreach ($routes as $routeName => $params) {
+            $defaults = ['controller' => $params[1]];
+
+            if (isset($params[2])) {
+                $defaults['action'] = $params[2];
+            }
+
+            if (isset($params[3]) && is_array($params[3])) {
+                $defaults = array_merge($params[3], $defaults);
+            }
+
+            $r->add($routeName, $params[0], ['defaults' => $defaults]);
+        }
+
+        return $r;
     }
 }

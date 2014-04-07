@@ -3,23 +3,20 @@
 namespace Spiffy\Mvc;
 
 use Spiffy\Event\EventsAwareTrait;
-use Spiffy\Event\Manager;
 use Spiffy\Inject\Injector;
-use Spiffy\Mvc\Listener\RouteListener;
+use Spiffy\Package\Feature\ConfigProvider;
+use Spiffy\Package\Feature\OptionsProvider;
+use Spiffy\Package\Feature\OptionsProviderTrait;
 
-class Application
+class Application implements ConfigProvider, OptionsProvider
 {
     use EventsAwareTrait;
+    use OptionsProviderTrait;
 
     /**
-     * @var DispatchEvent
+     * @var MvcEvent
      */
-    protected $dispatchEvent;
-
-    /**
-     * @var RouteEvent
-     */
-    protected $routeEvent;
+    protected $event;
 
     /**
      * @var Injector
@@ -27,13 +24,17 @@ class Application
     protected $injector;
 
     /**
-     * @param Injector $injector
+     * @return MvcEvent
      */
-    public function __construct(Injector $injector)
+    public function getEvent()
     {
-        $this->dispatchEvent = new DispatchEvent($this);
-        $this->routeEvent = new RouteEvent($this);
-        $this->injector = $injector;
+        if (!$this->event instanceof MvcEvent) {
+            $i = $this->getInjector();
+
+            $this->event = new MvcEvent($this);
+            $this->event->setRequest($i->nvoke('request'));
+        }
+        return $this->event;
     }
 
     /**
@@ -41,20 +42,41 @@ class Application
      */
     public function getInjector()
     {
+        if (!$this->injector instanceof Injector) {
+            $this->injector = new Injector();
+        }
         return $this->injector;
     }
 
+    /**
+     * Runs the application by firing the bootstrap, route,
+     * dispatch, render, and response listeners.
+     */
     public function run()
     {
-        $this->events()->fire($this->routeEvent);
-        $this->events()->fire($this->dispatchEvent);
+        $event = $this->getEvent();
+
+        $event->setType(MvcEvent::EVENT_BOOTSTRAP);
+        $this->events()->fire($event);
+
+        $event->setType(MvcEvent::EVENT_ROUTE);
+        $this->events()->fire($event);
+
+        $event->setType(MvcEvent::EVENT_DISPATCH);
+        $this->events()->fire($event);
+
+        $event->setType(MvcEvent::EVENT_RENDER);
+        $this->events()->fire($event);
+
+        $event->setType(MvcEvent::EVENT_FINISH);
+        $this->events()->fire($event);
     }
 
     /**
-     * @param Manager $events
+     * @return array
      */
-    protected function initEvents(Manager $events)
+    public function getConfig()
     {
-        $events->attach(new RouteListener());
+        return include __DIR__ . '/../config/config.php';
     }
 }
