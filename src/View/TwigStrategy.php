@@ -31,9 +31,9 @@ class TwigStrategy implements Strategy
     /**
      * {@inheritDoc}
      */
-    public function render($nameOrModel)
+    public function render($nameOrModel, array $variables = [])
     {
-        return $this->renderer->render($nameOrModel);
+        return $this->renderer->render($nameOrModel, $variables);
     }
 
     /**

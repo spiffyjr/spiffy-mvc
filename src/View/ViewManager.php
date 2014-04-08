@@ -6,6 +6,8 @@ use Spiffy\Event\Listener;
 use Spiffy\Event\Manager;
 use Spiffy\Inject\Injector;
 use Spiffy\Mvc\MvcEvent;
+use Spiffy\View\Strategy;
+use Spiffy\View\ViewModel;
 
 class ViewManager implements Listener
 {
@@ -13,6 +15,11 @@ class ViewManager implements Listener
      * @var Injector
      */
     protected $injector;
+
+    /**
+     * @var Strategy
+     */
+    protected $defaultStrategy;
 
     /**
      * @var string
@@ -28,6 +35,14 @@ class ViewManager implements Listener
      * @var \Spiffy\View\Strategy[]
      */
     protected $strategies = [];
+
+    /**
+     * @param Strategy $defaultStrategy
+     */
+    public function __construct(Strategy $defaultStrategy)
+    {
+        $this->defaultStrategy = $defaultStrategy;
+    }
 
     /**
      * @param Manager $events
@@ -49,11 +64,18 @@ class ViewManager implements Listener
         $this->injector = $app->getInjector();
 
         $options = $app->getOption('view_manager');
-        $this->notFoundTemplate = $options['not_found_template'];
-        $this->errorTemplate = $options['error_template'];
-        $this->strategies = (array) $options['strategies'];
 
-        $this->registerStrategies();
+        if (isset($options['not_found_template'])) {
+            $this->notFoundTemplate = $options['not_found_template'];
+        }
+        if (isset($options['error_template'])) {
+            $this->errorTemplate = $options['error_template'];
+        }
+
+        if (isset($options['strategies'])) {
+            $this->strategies = (array) $options['strategies'];
+            $this->registerStrategies();
+        }
     }
 
     /**
@@ -62,6 +84,7 @@ class ViewManager implements Listener
     public function onRender(MvcEvent $e)
     {
         $model = $e->getViewModel();
+        $result = null;
 
         foreach ($this->strategies as $strategy) {
             if (!$strategy->canRender($model)) {
@@ -76,14 +99,27 @@ class ViewManager implements Listener
                 $e->set('exception', $ex);
                 $e->getApplication()->events()->fire($e);
 
+                if (!$e->getViewModel()) {
+                    $model = new ViewModel();
+                    $e->setViewModel($model);
+                }
+
                 $model->setTemplate($this->getErrorTemplate());
                 $model->setVariables($e->getParams());
 
-                $result = $strategy->render($model);
+                $result = $this->defaultStrategy->render($model);
             }
 
-            $e->setResult($result);
+            if (null !== $result) {
+                break;
+            }
         }
+
+        if (null === $result) {
+            $result = $this->defaultStrategy->render($result);
+        }
+
+        $e->setResult($result);
     }
 
     /**
@@ -126,16 +162,17 @@ class ViewManager implements Listener
         $i = $this->injector;
         foreach ($this->strategies as $index => &$strategy) {
             if (!is_string($strategy)) {
+                unset($this->strategies[$index]);
                 continue;
             }
 
             if ($i->has($strategy)) {
                 $strategy = $i->nvoke($strategy);
-            } else {
+            } else if (class_exists($strategy)) {
                 $strategy = new $strategy();
             }
 
-            if ($strategy instanceof Listener) {
+            if (!$strategy instanceof Strategy) {
                 unset($this->strategies[$index]);
             }
         }
