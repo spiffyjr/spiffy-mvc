@@ -150,7 +150,7 @@ class MvcEvent extends Event
     /**
      * @param \Spiffy\Route\RouteMatch $routeMatch
      */
-    public function setRouteMatch($routeMatch)
+    public function setRouteMatch(RouteMatch $routeMatch)
     {
         $this->routeMatch = $routeMatch;
     }
