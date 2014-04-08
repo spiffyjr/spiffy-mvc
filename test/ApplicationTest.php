@@ -38,6 +38,41 @@ class ApplicationTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('Spiffy\Inject\Injector', $app->getInjector());
     }
 
+    /**
+     * @covers ::getConfig
+     */
+    public function testGetConfig()
+    {
+        $this->assertSame(include __DIR__ . '/../config/config.php', $this->app->getConfig());
+    }
+
+    /**
+     * @covers ::run
+     */
+    public function testRunFiresEvents()
+    {
+        $result = '';
+        $events = $this->app->events();
+        $events->on(MvcEvent::EVENT_BOOTSTRAP, function() use (&$result) {
+            $result .= 'bootstrap';
+        });
+        $events->on(MvcEvent::EVENT_ROUTE, function() use (&$result) {
+            $result .= 'route';
+        });
+        $events->on(MvcEvent::EVENT_DISPATCH, function() use (&$result) {
+            $result .= 'dispatch';
+        });
+        $events->on(MvcEvent::EVENT_RENDER, function() use (&$result) {
+            $result .= 'render';
+        });
+        $events->on(MvcEvent::EVENT_FINISH, function() use (&$result) {
+            $result .= 'finish';
+        });
+
+        $this->app->run();
+        $this->assertSame('bootstraproutedispatchrenderfinish', $result);
+    }
+
     protected function setUp()
     {
         $this->app = $app = new Application();
