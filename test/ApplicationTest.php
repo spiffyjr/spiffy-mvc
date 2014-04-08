@@ -1,12 +1,7 @@
 <?php
 
 namespace Spiffy\Mvc;
-
-use Spiffy\Route\Route;
-use Spiffy\Route\RouteMatch;
-use Spiffy\View\ViewModel;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 
 /**
  * @coversDefaultClass \Spiffy\Mvc\Application

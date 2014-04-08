@@ -25,7 +25,10 @@
     },
     "autoload": {
         "psr-4": {
-            "Spiffy\\Mvc\\": "src/"
+            "Spiffy\\Mvc\\": [
+                "src/",
+                "test/"
+            ]
         }
     },
     "extra": {

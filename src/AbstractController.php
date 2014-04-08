@@ -52,6 +52,6 @@ abstract class AbstractController implements Dispatchable
             return ucfirst($matches[1]);
         };
 
-        return preg_replace_callback('@(-[a-zA-Z])@', $callback, $action);
+        return preg_replace_callback('@-([a-zA-Z])@', $callback, $action);
     }
 }
