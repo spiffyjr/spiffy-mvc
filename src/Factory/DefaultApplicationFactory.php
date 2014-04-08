@@ -30,10 +30,23 @@ class DefaultApplicationFactory
     public function createService()
     {
         $config = $this->config;
+        $env = isset($config['environment']) ? (array) $config['environment'] : [];
         $packages = isset($config['packages']) ? (array) $config['packages'] : [];
+
+        foreach ($env as $key => $value) {
+            $_ENV[$key] = $value;
+        }
 
         $pm = new PackageManager();
         $pm->add('spiffy.mvc', 'Spiffy\\Mvc\\Application');
+
+        if (isset($config['override_pattern'])) {
+            $pm->setOverridePattern($config['override_pattern']);
+        }
+
+        if (isset($config['override_flags'])) {
+            $pm->setOverrideFlags($config['override_flags']);
+        }
 
         foreach ($packages as $packageName => $fqcn) {
             if (is_numeric($packageName)) {
