@@ -168,7 +168,7 @@ class ViewManager implements Listener
 
             if ($i->has($strategy)) {
                 $strategy = $i->nvoke($strategy);
-            } else if (class_exists($strategy)) {
+            } elseif (class_exists($strategy)) {
                 $strategy = new $strategy();
             }
 
