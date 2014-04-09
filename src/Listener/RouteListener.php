@@ -21,29 +21,23 @@ class RouteListener implements Listener
 
     /**
      * @param MvcEvent $e
-     * @throws Exception\MissingRouterException
-     * @throws Exception\MissingRequestException
      */
     public function onRoute(MvcEvent $e)
     {
         $app = $e->getApplication();
         $i = $app->getInjector();
 
+        /** @var \Symfony\Component\HttpFoundation\Request $request */
         $request = $i->nvoke('request');
-        if (!$request instanceof Request) {
-            throw new Exception\MissingRequestException();
-        }
 
+        /** @var \Spiffy\Route\Router $router */
         $router = $i->nvoke('router');
-        if (!$router instanceof Router) {
-            throw new Exception\MissingRouterException();
-        }
 
         $match = $router->match($request->getRequestUri(), $request->server->all());
-
         if (null === $match) {
             $e->setType(MvcEvent::EVENT_ROUTE_ERROR);
             $app->events()->fire($e);
+            return;
         }
 
         $e->setRouteMatch($match);

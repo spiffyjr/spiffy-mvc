@@ -35,7 +35,7 @@ abstract class AbstractController implements Dispatchable
     /**
      * Default action for when an action is not found.
      *
-     * @return array
+     * @return ViewModel
      */
     public function notFound()
     {
