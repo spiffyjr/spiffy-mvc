@@ -14,14 +14,14 @@ class CreateViewModelListener implements Listener
      */
     public function attach(Manager $events)
     {
-        $events->on(MvcEvent::EVENT_DISPATCH, [$this, 'createArrayViewModel'], -90);
-        $events->on(MvcEvent::EVENT_DISPATCH, [$this, 'createNullViewModel'], -90);
+        $events->on(MvcEvent::EVENT_DISPATCH, [$this, 'createModelFromArray'], -90);
+        $events->on(MvcEvent::EVENT_DISPATCH, [$this, 'createModelFromNull'], -90);
     }
 
     /**
      * @param MvcEvent $e
      */
-    public function createArrayViewModel(MvcEvent $e)
+    public function createModelFromArray(MvcEvent $e)
     {
         $result = $e->getResult();
         if (!is_array($result)) {
@@ -33,7 +33,7 @@ class CreateViewModelListener implements Listener
     /**
      * @param MvcEvent $e
      */
-    public function createNullViewModel(MvcEvent $e)
+    public function createModelFromNull(MvcEvent $e)
     {
         $result = $e->getResult();
         if (null !== $result) {

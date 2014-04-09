@@ -32,12 +32,13 @@ class HandleErrorsListener implements Listener
 
     /**
      * @param MvcEvent $e
+     * @return null|\Spiffy\View\ViewModel
      */
     public function handleExceptions(MvcEvent $e)
     {
         $error = $e->getError();
         if ($error !== MvcEvent::ERROR_EXCEPTION) {
-            return;
+            return null;
         }
 
         $i = $e->getApplication()->getInjector();
@@ -55,6 +56,8 @@ class HandleErrorsListener implements Listener
         $e->setResponse($response);
         $e->setViewModel($model);
         $e->setResult($model);
+
+        return $model;
     }
 
     /**
