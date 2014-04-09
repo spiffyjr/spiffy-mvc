@@ -4,7 +4,7 @@ namespace Spiffy\Mvc\TestAsset;
 
 use Spiffy\Mvc\AbstractController;
 
-class Controller extends AbstractController
+class TestController extends AbstractController
 {
     public function index()
     {

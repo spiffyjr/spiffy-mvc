@@ -2,7 +2,7 @@
 
 namespace Spiffy\Mvc;
 
-use Spiffy\Mvc\TestAsset\Controller;
+use Spiffy\Mvc\TestAsset\TestController;
 use Spiffy\View\ViewModel;
 
 /**
@@ -15,7 +15,7 @@ class AbstractControllerTest extends \PHPUnit_Framework_TestCase
      */
     public function testNotFoundMethodReturnsEmptyViewModel()
     {
-        $c = new Controller();
+        $c = new TestController();
         $this->assertEquals(new ViewModel(), $c->notFound());
     }
 
@@ -26,7 +26,7 @@ class AbstractControllerTest extends \PHPUnit_Framework_TestCase
      */
     public function testDispatchThrowsExceptionOnMissingActionWithNoMvcEvent()
     {
-        $c = new Controller();
+        $c = new TestController();
         $c->dispatch(['action' => 'doesnotexist']);
     }
 
@@ -41,7 +41,7 @@ class AbstractControllerTest extends \PHPUnit_Framework_TestCase
         $events->on(MvcEvent::EVENT_DISPATCH_ERROR, function() use ($result) {
             return $result;
         });
-        $c = new Controller();
+        $c = new TestController();
 
         $params = ['event' => new MvcEvent($app), 'action' => 'doesnotexist'];
         $this->assertSame($result, $c->dispatch($params));
@@ -52,7 +52,7 @@ class AbstractControllerTest extends \PHPUnit_Framework_TestCase
      */
     public function testDispatchNormalizesActions()
     {
-        $c = new Controller();
+        $c = new TestController();
         $params = ['action' => 'camel-case'];
         $this->assertSame('camelCase', $c->dispatch($params));
     }
@@ -62,7 +62,7 @@ class AbstractControllerTest extends \PHPUnit_Framework_TestCase
      */
     public function testDefaultActionIsIndex()
     {
-        $c = new Controller();
+        $c = new TestController();
         $this->assertSame('index', $c->dispatch([]));
     }
 }
