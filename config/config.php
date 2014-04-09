@@ -19,9 +19,7 @@ return [
                 'loader_paths' => [
                     'spiffy.mvc' => __DIR__ . '/../view'
                 ],
-                'options' => [
-                    'cache' => 'cache'
-                ]
+                'options' => []
             ]
         ],
     ]
