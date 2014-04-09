@@ -1,6 +1,7 @@
 <?php
 
 namespace Spiffy\Mvc\Factory;
+
 use Spiffy\Inject\Injector;
 
 /**

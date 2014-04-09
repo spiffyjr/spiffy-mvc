@@ -7,9 +7,9 @@ return [
         ],
 
         'view_manager' => [
-            'strategies' => [
-                'Spiffy\\Mvc\\View\\TwigStrategy',
-            ],
+            'default_strategy' => 'Spiffy\\Mvc\\View\\TwigStrategy',
+
+            'strategies' => [],
 
             'not_found_template' => 'error/404',
             'error_template' => 'error/error',
