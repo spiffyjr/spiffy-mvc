@@ -114,9 +114,8 @@ class ViewManager implements Listener
                 break;
             }
         }
-
         if (null === $result) {
-            $result = $this->defaultStrategy->render($result);
+            $result = $this->defaultStrategy->render($model);
         }
 
         $e->setResult($result);
