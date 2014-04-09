@@ -28,27 +28,27 @@ class InjectTemplateListener implements Listener
             return;
         }
 
-        $i = $e->getApplication()->getInjector();
         $match = $e->getRouteMatch();
-
         if (!$match instanceof RouteMatch) {
             return;
         }
 
         $controller = $match->get('controller');
-
         if (!$controller) {
             return;
         }
 
+        // todo: should we null this out with a not found action?
         $action = $match->get('action', 'index');
-
         if ($action == 'not-found') {
             return;
         }
 
-        $package = $this->determinePackage($controller, $i['spiffy.mvc']['controllers']);
-        $model->setTemplate(implode('/', [$package, $controller, $action]));
+        $i = $e->getApplication()->getInjector();
+        $map = isset($i['spiffy.mvc']['controllers']) ? $i['spiffy.mvc']['controllers'] : [];
+        $package = $this->determinePackage($controller, $map);
+
+        $model->setTemplate(ltrim(implode('/', [$package, $controller, $action]), '/'));
     }
 
     /**

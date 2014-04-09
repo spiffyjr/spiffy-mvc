@@ -19,6 +19,7 @@ class ResponseListener implements Listener
 
     /**
      * @param MvcEvent $e
+     * @return \Symfony\Component\HttpFoundation\Response
      */
     public function sendResponse(MvcEvent $e)
     {
@@ -30,5 +31,7 @@ class ResponseListener implements Listener
 
         $response->setContent($e->getResult());
         $response->send();
+
+        return $response;
     }
 }
