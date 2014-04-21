@@ -6,7 +6,6 @@ use Spiffy\Event\Listener;
 use Spiffy\Event\Manager;
 use Spiffy\Mvc\MvcEvent;
 use Spiffy\View\ViewModel;
-use Symfony\Component\HttpFoundation\Response;
 
 class HandleErrorsListener implements Listener
 {

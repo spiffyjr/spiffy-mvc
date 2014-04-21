@@ -2,7 +2,6 @@
 
 namespace Spiffy\Mvc\Factory;
 
-use Spiffy\Inject\Injector;
 use Spiffy\Package\PackageManager;
 
 class PackageManagerFactory

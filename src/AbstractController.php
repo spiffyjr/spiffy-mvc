@@ -58,7 +58,7 @@ abstract class AbstractController implements Dispatchable
     }
 
     /**
-     * @return null|\Symfony\Component\HttpFoundation\Request
+     * @return \Symfony\Component\HttpFoundation\Request
      */
     public function getRequest()
     {
@@ -67,7 +67,7 @@ abstract class AbstractController implements Dispatchable
     }
 
     /**
-     * @return null|\Symfony\Component\HttpFoundation\Response
+     * @return \Symfony\Component\HttpFoundation\Response
      */
     public function getResponse()
     {

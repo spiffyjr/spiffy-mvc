@@ -8,7 +8,6 @@ use Spiffy\Inject\Injector;
 use Spiffy\Mvc\MvcEvent;
 use Spiffy\View\Model;
 use Spiffy\View\Strategy;
-use Spiffy\View\ViewModel;
 use Symfony\Component\HttpFoundation\Response;
 
 class ViewManager implements Listener
