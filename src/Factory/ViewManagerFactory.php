@@ -4,7 +4,7 @@ namespace Spiffy\Mvc\Factory;
 
 use Spiffy\Inject\Injector;
 use Spiffy\Inject\ServiceFactory;
-use Spiffy\Mvc\View\ViewManager;
+use Spiffy\Mvc\ViewManager;
 
 class ViewManagerFactory implements ServiceFactory
 {

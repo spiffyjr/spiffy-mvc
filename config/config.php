@@ -2,25 +2,19 @@
 
 return [
     'spiffy.mvc' => [
-        'services' => [
-            'Spiffy\\Mvc\\View\\TwigStrategy' => 'Spiffy\\Mvc\\Factory\\TwigStrategyFactory',
-        ],
-
+        'name' => 'Spiffy\Mvc',
+        'version' => \Spiffy\Mvc\Version::CURRENT,
+        'services' => [],
         'view_manager' => [
-            'default_strategy' => 'Spiffy\\Mvc\\View\\TwigStrategy',
+            // This component does little on its own without an extending
+            // component to supply the default strategy. spiffy-mvc-twig
+            // is an example.
+            'default_strategy' => 'Spiffy\Mvc\EmptyViewStrategy',
 
             'strategies' => [],
 
             'not_found_template' => 'error/404',
             'error_template' => 'error/error',
-
-            'twig' => [
-                'suffix' => '.twig',
-                'loader_paths' => [
-                    'spiffy.mvc' => __DIR__ . '/../view'
-                ],
-                'options' => []
-            ]
         ],
     ]
 ];

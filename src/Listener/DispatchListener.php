@@ -7,6 +7,7 @@ use Spiffy\Event\Listener;
 use Spiffy\Event\Manager;
 use Spiffy\Mvc\MvcEvent;
 use Spiffy\Route\RouteMatch;
+use Symfony\Component\HttpFoundation\Response;
 
 class DispatchListener implements Listener
 {
@@ -27,7 +28,7 @@ class DispatchListener implements Listener
     {
         $match = $e->getRouteMatch();
         if (!$match instanceof RouteMatch) {
-            return $this->finish($this->routeNotFound($e, $e), $e);
+            return $this->finish($e, $this->routeNotFound($e));
         }
 
         $i = $e->getApplication()->getInjector();
@@ -37,30 +38,32 @@ class DispatchListener implements Listener
         $controller = $match->get('controller');
 
         if (!$d->has($controller)) {
-            return $this->finish($this->controllerNotFound($e), $e);
+            return $this->finish($e, $this->controllerNotFound($e));
         }
 
         $params = $match->getParams();
         $params['event'] = $e;
 
         try {
-            $result = $d->ispatch($controller, $params);
+            return $this->finish($e, $d->ispatch($controller, $params));
         } catch (\Exception $ex) {
-            $result = $this->controllerException($ex, $e);
         }
 
-        return $this->finish($result, $e);
+        return $this->finish($e, $this->controllerException($ex, $e));
     }
 
     /**
+     * @param \Spiffy\Mvc\MvcEvent $e
      * @param mixed $result
-     * @param MvcEvent $e
-     * @return mixed
+     * @return null
      */
-    protected function finish($result, MvcEvent $e)
+    protected function finish(MvcEvent $e, $result)
     {
-        $e->setResult($result);
-        return $result;
+        $e->setDispatchResult($result);
+
+        if ($result instanceof Response) {
+            $e->setResponse($result);
+        }
     }
 
     /**
@@ -74,7 +77,7 @@ class DispatchListener implements Listener
         $result = $e->getApplication()->events()->fire($e);
 
         if ($result->count() == 0) {
-            return $e->getResult();
+            return null;
         }
 
         return $result->top();
@@ -93,7 +96,7 @@ class DispatchListener implements Listener
         $result = $e->getApplication()->events()->fire($e);
 
         if ($result->count() == 0) {
-            return $e->getResult();
+            return null;
         }
 
         return $result->top();
@@ -110,7 +113,7 @@ class DispatchListener implements Listener
         $result = $e->getApplication()->events()->fire($e);
 
         if ($result->count() == 0) {
-            return $e->getResult();
+            return null;
         }
 
         return $result->top();

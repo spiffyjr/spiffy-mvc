@@ -5,6 +5,7 @@ namespace Spiffy\Mvc;
 use Spiffy\Event\EventsAwareTrait;
 use Spiffy\Inject\Injector;
 use Spiffy\Package\Feature\ConfigProvider;
+use Spiffy\Package\Feature\Exception\MissingOptionException;
 use Spiffy\Package\Feature\OptionsProvider;
 use Spiffy\Package\Feature\OptionsProviderTrait;
 
@@ -22,6 +23,30 @@ class Application implements ConfigProvider, OptionsProvider
      * @var Injector
      */
     protected $injector;
+
+    /**
+     * @return string
+     */
+    public function getName()
+    {
+        try {
+            return $this->getOption('name');
+        } catch (MissingOptionException $ex) {
+        }
+        return 'UNKNOWN';
+    }
+
+    /**
+     * @return string
+     */
+    public function getVersion()
+    {
+        try {
+            return $this->getOption('version');
+        } catch (MissingOptionException $ex) {
+        }
+        return 'UNKNOWN';
+    }
 
     /**
      * @return MvcEvent
@@ -49,15 +74,24 @@ class Application implements ConfigProvider, OptionsProvider
     }
 
     /**
+     * Bootstrap the application.
+     */
+    public function bootstrap()
+    {
+        $event = $this->getEvent();
+        $event->setType(MvcEvent::EVENT_BOOTSTRAP);
+        $this->events()->fire($event);
+    }
+
+    /**
      * Runs the application by firing the bootstrap, route,
      * dispatch, render, and response listeners.
      */
     public function run()
     {
-        $event = $this->getEvent();
+        $this->bootstrap();
 
-        $event->setType(MvcEvent::EVENT_BOOTSTRAP);
-        $this->events()->fire($event);
+        $event = $this->getEvent();
 
         $event->setType(MvcEvent::EVENT_ROUTE);
         $this->events()->fire($event);

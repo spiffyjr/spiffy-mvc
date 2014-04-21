@@ -46,7 +46,7 @@ class InjectTemplateListenerTest extends \PHPUnit_Framework_TestCase
 
         $model = new ViewModel();
         $model->setTemplate('template');
-        $e->setViewModel($model);
+        $e->setModel($model);
 
         $this->assertNull($l->createViewTemplate($e));
     }
@@ -60,7 +60,7 @@ class InjectTemplateListenerTest extends \PHPUnit_Framework_TestCase
         $e = $this->e;
 
         $model = new ViewModel();
-        $e->setViewModel($model);
+        $e->setModel($model);
 
         $this->assertNull($l->createViewTemplate($e));
     }
@@ -77,7 +77,7 @@ class InjectTemplateListenerTest extends \PHPUnit_Framework_TestCase
         $e->setRouteMatch($match);
 
         $model = new ViewModel();
-        $e->setViewModel($model);
+        $e->setModel($model);
 
         $this->assertNull($l->createViewTemplate($e));
     }
@@ -96,7 +96,7 @@ class InjectTemplateListenerTest extends \PHPUnit_Framework_TestCase
         $e->setRouteMatch($match);
 
         $model = new ViewModel();
-        $e->setViewModel($model);
+        $e->setModel($model);
 
         $this->assertNull($l->createViewTemplate($e));
     }
@@ -115,7 +115,7 @@ class InjectTemplateListenerTest extends \PHPUnit_Framework_TestCase
         $e->setRouteMatch($match);
 
         $model = new ViewModel();
-        $e->setViewModel($model);
+        $e->setModel($model);
 
         $l->createViewTemplate($e);
         $this->assertSame('foo/index', $model->getTemplate());
@@ -137,7 +137,7 @@ class InjectTemplateListenerTest extends \PHPUnit_Framework_TestCase
         $e->setRouteMatch($match);
 
         $model = new ViewModel();
-        $e->setViewModel($model);
+        $e->setModel($model);
 
         $l->createViewTemplate($e);
         $this->assertSame('application/foo/index', $model->getTemplate());

@@ -25,9 +25,9 @@ class ViewManagerFactoryTest extends \PHPUnit_Framework_TestCase
 
         $df = new ViewManagerFactory();
 
-        /** @var \Spiffy\Mvc\View\ViewManager $result */
+        /** @var \Spiffy\Mvc\ViewManager $result */
         $result = $df->createService($i);
 
-        $this->assertInstanceOf('Spiffy\Mvc\View\ViewManager', $result);
+        $this->assertInstanceOf('Spiffy\Mvc\ViewManager', $result);
     }
 }

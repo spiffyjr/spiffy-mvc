@@ -8,6 +8,7 @@ use Spiffy\Mvc\Application;
 use Spiffy\Mvc\MvcEvent;
 use Spiffy\Route\Route;
 use Spiffy\Route\RouteMatch;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * @coversDefaultClass \Spiffy\Mvc\Listener\DispatchListener
@@ -46,7 +47,7 @@ class DispatchListenerTest extends \PHPUnit_Framework_TestCase
         $l = $this->l;
 
         $this->assertNull($l->onDispatch($e));
-        $this->assertNull($e->getResult());
+        $this->assertNull($e->getDispatchResult());
     }
 
     /**
@@ -57,12 +58,15 @@ class DispatchListenerTest extends \PHPUnit_Framework_TestCase
         $e = $this->e;
         $l = $this->l;
 
+        $l->onDispatch($e);
+        $this->assertNull($e->getDispatchResult());
+
         $events = $e->getApplication()->events();
         $events->on(MvcEvent::EVENT_ROUTE_ERROR, function() { return 'foo'; });
         $events->on(MvcEvent::EVENT_ROUTE_ERROR, function() { return 'bar'; });
 
-        $this->assertSame('bar', $l->onDispatch($e));
-        $this->assertSame('bar', $e->getResult());
+        $l->onDispatch($e);
+        $this->assertSame('bar', $e->getDispatchResult());
     }
 
     /**
@@ -77,7 +81,7 @@ class DispatchListenerTest extends \PHPUnit_Framework_TestCase
         $e->setRouteMatch($match);
 
         $this->assertNull($l->onDispatch($e));
-        $this->assertNull($e->getResult());
+        $this->assertNull($e->getDispatchResult());
     }
 
     /**
@@ -95,8 +99,8 @@ class DispatchListenerTest extends \PHPUnit_Framework_TestCase
         $match = new RouteMatch(new Route('home', '/'));
         $e->setRouteMatch($match);
 
-        $this->assertSame('bar', $l->onDispatch($e));
-        $this->assertSame('bar', $e->getResult());
+        $l->onDispatch($e);
+        $this->assertSame('bar', $e->getDispatchResult());
     }
 
     /**
@@ -116,7 +120,7 @@ class DispatchListenerTest extends \PHPUnit_Framework_TestCase
         $match->set('controller', 'foo');
 
         $e->setRouteMatch($match);
-        $this->assertNull($l->onDispatch($e));
+        $l->onDispatch($e);
         $this->assertTrue($e->hasError());
         $this->assertSame(MvcEvent::EVENT_DISPATCH_ERROR, $e->getType());
         $this->assertInstanceOf('RuntimeException', $e->get('exception'));
@@ -143,8 +147,8 @@ class DispatchListenerTest extends \PHPUnit_Framework_TestCase
         $match->set('controller', 'foo');
         $e->setRouteMatch($match);
 
-        $this->assertSame('bar', $l->onDispatch($e));
-        $this->assertSame('bar', $e->getResult());
+        $l->onDispatch($e);
+        $this->assertSame('bar', $e->getDispatchResult());
     }
 
     /**
@@ -165,8 +169,33 @@ class DispatchListenerTest extends \PHPUnit_Framework_TestCase
 
         $e->setRouteMatch($match);
 
-        $this->assertSame($d->ispatch('foo'), $l->onDispatch($e));
-        $this->assertSame($d->ispatch('foo'), $e->getResult());
+        $l->onDispatch($e);
+        $this->assertSame($d->ispatch('foo'), $e->getDispatchResult());
+    }
+
+    /**
+     * @covers ::onDispatch, ::finish
+     */
+    public function testOnDispatchSetsResponseIfResultIsResponse()
+    {
+        $response = new Response();
+
+        $e = $this->e;
+        $l = $this->l;
+        $i = $e->getApplication()->getInjector();
+
+        /** @var \Spiffy\Dispatch\Dispatcher $d */
+        $d = $i->nvoke('dispatcher');
+        $d->add('foo', function() use ($response) { return $response; });
+
+        $match = new RouteMatch(new Route('home', '/'));
+        $match->set('controller', 'foo');
+
+        $e->setRouteMatch($match);
+
+        $l->onDispatch($e);
+        $this->assertSame($d->ispatch('foo'), $e->getDispatchResult());
+        $this->assertSame($response, $e->getResponse());
     }
 
     protected function setUp()

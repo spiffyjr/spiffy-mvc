@@ -23,11 +23,11 @@ class CreateViewModelListener implements Listener
      */
     public function createModelFromArray(MvcEvent $e)
     {
-        $result = $e->getResult();
-        if (!is_array($result)) {
+        $result = $e->getDispatchResult();
+        if (!is_array($result) || $e->getError()) {
             return;
         }
-        $e->setViewModel(new ViewModel($result));
+        $e->setModel(new ViewModel($result));
     }
 
     /**
@@ -35,10 +35,10 @@ class CreateViewModelListener implements Listener
      */
     public function createModelFromNull(MvcEvent $e)
     {
-        $result = $e->getResult();
-        if (null !== $result) {
+        $result = $e->getDispatchResult();
+        if (null !== $result || $e->getError()) {
             return;
         }
-        $e->setViewModel(new ViewModel());
+        $e->setModel(new ViewModel());
     }
 }

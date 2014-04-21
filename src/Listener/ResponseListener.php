@@ -29,7 +29,9 @@ class ResponseListener implements Listener
             $response = new Response();
         }
 
-        $response->setContent($e->getResult());
+        if ($e->getRenderResult()) {
+            $response->setContent($e->getRenderResult());
+        }
         $response->send();
 
         return $response;

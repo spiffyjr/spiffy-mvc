@@ -33,12 +33,12 @@ class CreateViewModelListenerTest extends \PHPUnit_Framework_TestCase
         $event = new MvcEvent(new Application());
 
         $l->createModelFromArray($event);
-        $this->assertNull($event->getViewModel());
+        $this->assertNull($event->getModel());
 
-        $event->setResult(['foo' => 'bar']);
+        $event->setDispatchResult(['foo' => 'bar']);
         $l->createModelFromArray($event);
 
-        $model = $event->getViewModel();
+        $model = $event->getModel();
         $this->assertInstanceOf('Spiffy\View\ViewModel', $model);
         $this->assertSame(['foo' => 'bar'], $model->getVariables());
     }
@@ -50,14 +50,14 @@ class CreateViewModelListenerTest extends \PHPUnit_Framework_TestCase
     {
         $l = new CreateViewModelListener();
         $event = new MvcEvent(new Application());
-        $event->setResult(['foo' => 'bar']);
+        $event->setDispatchResult(['foo' => 'bar']);
 
         $l->createModelFromNull($event);
-        $this->assertNull($event->getViewModel());
+        $this->assertNull($event->getModel());
 
-        $event->setResult(null);
+        $event->setDispatchResult(null);
         $l->createModelFromNull($event);
-        $model = $event->getViewModel();
+        $model = $event->getModel();
         $this->assertInstanceOf('Spiffy\View\ViewModel', $model);
     }
 }

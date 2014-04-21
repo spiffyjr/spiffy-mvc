@@ -35,6 +35,16 @@ class MvcEvent extends Event
     protected $error;
 
     /**
+     * @var mixed
+     */
+    protected $dispatchResult;
+
+    /**
+     * @var string
+     */
+    protected $renderResult;
+
+    /**
      * @var Request
      */
     protected $request;
@@ -45,11 +55,6 @@ class MvcEvent extends Event
     protected $response;
 
     /**
-     * @var mixed
-     */
-    protected $result;
-
-    /**
      * @var RouteMatch
      */
     protected $routeMatch;
@@ -57,7 +62,7 @@ class MvcEvent extends Event
     /**
      * @var Model
      */
-    protected $viewModel;
+    protected $model;
 
     /**
      * @param Application $application
@@ -124,22 +129,6 @@ class MvcEvent extends Event
     }
 
     /**
-     * @param mixed $result
-     */
-    public function setResult($result)
-    {
-        $this->result = $result;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getResult()
-    {
-        return $this->result;
-    }
-
-    /**
      * @return \Spiffy\Mvc\Application
      */
     public function getApplication()
@@ -164,18 +153,50 @@ class MvcEvent extends Event
     }
 
     /**
-     * @param \Spiffy\View\Model $viewModel
+     * @param \Spiffy\View\Model $model
      */
-    public function setViewModel($viewModel)
+    public function setModel($model)
     {
-        $this->viewModel = $viewModel;
+        $this->model = $model;
     }
 
     /**
      * @return \Spiffy\View\Model
      */
-    public function getViewModel()
+    public function getModel()
     {
-        return $this->viewModel;
+        return $this->model;
+    }
+
+    /**
+     * @param mixed $dispatchResult
+     */
+    public function setDispatchResult($dispatchResult)
+    {
+        $this->dispatchResult = $dispatchResult;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getDispatchResult()
+    {
+        return $this->dispatchResult;
+    }
+
+    /**
+     * @param string $renderResult
+     */
+    public function setRenderResult($renderResult)
+    {
+        $this->renderResult = $renderResult;
+    }
+
+    /**
+     * @return string
+     */
+    public function getRenderResult()
+    {
+        return $this->renderResult;
     }
 }

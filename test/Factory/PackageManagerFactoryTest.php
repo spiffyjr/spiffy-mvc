@@ -16,7 +16,7 @@ class PackageManagerFactoryTest extends \PHPUnit_Framework_TestCase
     {
         $config = [
             'packages' => [
-                'spiffy.package.test_asset.application',
+                'spiffy.package.test-asset.application',
             ]
         ];
 
@@ -29,7 +29,7 @@ class PackageManagerFactoryTest extends \PHPUnit_Framework_TestCase
         $this->assertCount(1, $pm->getPackages());
         $this->assertInstanceOf(
             'Spiffy\Package\TestAsset\Application\Package',
-            $pm->getPackage('spiffy.package.test_asset.application')
+            $pm->getPackage('spiffy.package.test-asset.application')
         );
     }
 
@@ -40,8 +40,8 @@ class PackageManagerFactoryTest extends \PHPUnit_Framework_TestCase
     {
         $config = [
             'packages' => [
-                'spiffy.package.test_asset.application',
-                'spiffy.package.test_asset.fqcn' => 'Spiffy\\Package\\TestAsset\\FQCN\\Module'
+                'spiffy.package.test-asset.application',
+                'spiffy.package.test-asset.fqcn' => 'Spiffy\\Package\\TestAsset\\FQCN\\Module'
             ]
         ];
 
@@ -54,11 +54,11 @@ class PackageManagerFactoryTest extends \PHPUnit_Framework_TestCase
         $this->assertCount(2, $pm->getPackages());
         $this->assertInstanceOf(
             'Spiffy\Package\TestAsset\Application\Package',
-            $pm->getPackage('spiffy.package.test_asset.application')
+            $pm->getPackage('spiffy.package.test-asset.application')
         );
         $this->assertInstanceOf(
             'Spiffy\\Package\\TestAsset\\FQCN\\Module',
-            $pm->getPackage('spiffy.package.test_asset.fqcn')
+            $pm->getPackage('spiffy.package.test-asset.fqcn')
         );
     }
 
@@ -68,9 +68,7 @@ class PackageManagerFactoryTest extends \PHPUnit_Framework_TestCase
     public function testCreateServiceOverridesFlagsAndPattern()
     {
         $config = [
-            'packages' => [
-
-            ],
+            'packages' => [],
             'override_pattern' => __DIR__ . '/../config/config.php',
             'override_flags' => GLOB_BRACE
         ];

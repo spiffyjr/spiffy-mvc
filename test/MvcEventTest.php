@@ -24,8 +24,8 @@ class MvcEventTest extends \PHPUnit_Framework_TestCase
     protected $event;
 
     /**
-     * @covers ::getError, ::getRequest, ::getResponse, ::getRouteMatch, ::getViewModel, ::getResult
-     * @covers ::setError, ::setRequest, ::setResponse, ::setRouteMatch, ::setViewModel, ::setResult
+     * @covers ::getError, ::getRequest, ::getResponse, ::getRouteMatch, ::getModel, ::getDispatchResult, ::getRenderResult
+     * @covers ::setError, ::setRequest, ::setResponse, ::setRouteMatch, ::setModel, ::setDispatchResult, ::setRenderResult
      * @dataProvider provider
      */
     public function testMutatorsAndAccessors($name, $value)
@@ -44,8 +44,9 @@ class MvcEventTest extends \PHPUnit_Framework_TestCase
             ['request', new Request()],
             ['response', new Response()],
             ['routeMatch', new RouteMatch(new Route('home', '/'))],
-            ['viewModel', new ViewModel()],
-            ['result', 'result string']
+            ['model', new ViewModel()],
+            ['dispatchResult', 'dispatch result string'],
+            ['renderResult', 'render result string']
         ];
     }
 

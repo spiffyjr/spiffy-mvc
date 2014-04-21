@@ -45,7 +45,7 @@ class ResponseListenerTest extends \PHPUnit_Framework_TestCase
     {
         $l = $this->l;
         $e = $this->e;
-        $e->setResult('foo');
+        $e->setRenderResult('foo');
 
         ob_start();
         $responseRessult = $l->sendResponse($e);
@@ -63,7 +63,7 @@ class ResponseListenerTest extends \PHPUnit_Framework_TestCase
     {
         $l = $this->l;
         $e = $this->e;
-        $e->setResult('foo');
+        $e->setRenderResult('foo');
 
         $response = new Response();
         $e->setResponse($response);

@@ -6,6 +6,7 @@ use Spiffy\Event\Listener;
 use Spiffy\Event\Manager;
 use Spiffy\Mvc\MvcEvent;
 use Spiffy\Route\RouteMatch;
+use Spiffy\View\Model;
 
 class InjectTemplateListener implements Listener
 {
@@ -23,8 +24,8 @@ class InjectTemplateListener implements Listener
      */
     public function createViewTemplate(MvcEvent $e)
     {
-        $model = $e->getViewModel();
-        if ($model->getTemplate()) {
+        $model = $e->getModel();
+        if (!$model instanceof Model || $model->getTemplate()) {
             return;
         }
 

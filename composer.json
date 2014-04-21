@@ -15,8 +15,9 @@
         "spiffy/spiffy-package": "~1.0-dev",
         "spiffy/spiffy-route": "~1.0-dev",
         "spiffy/spiffy-view": "~1.0-dev",
-        "spiffy/spiffy-view-twig": "~1.0-dev",
 
+        "symfony/console": "~2.4",
+        "symfony/finder": "~2.4",
         "symfony/http-foundation": "~2.4"
     },
     "require-dev": {

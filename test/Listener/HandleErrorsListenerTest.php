@@ -5,7 +5,7 @@ use Spiffy\Event\EventManager;
 use Spiffy\Mvc\Application;
 use Spiffy\Mvc\MvcEvent;
 use Spiffy\Mvc\TestAsset\TestStrategy;
-use Spiffy\Mvc\View\ViewManager;
+use Spiffy\Mvc\ViewManager;
 use Spiffy\Route\Route;
 use Spiffy\Route\RouteMatch;
 
@@ -47,23 +47,25 @@ class HandleErrorsListenerTest extends \PHPUnit_Framework_TestCase
         $l = $this->l;
         $e = $this->e;
 
-        $this->assertNull($l->handleExceptions($e));
-        $this->assertNull($e->getResult());
+        $l->handleExceptions($e);
+        $this->assertNull($e->getModel());
     }
 
     /**
      * @covers ::handleErrors
      */
-    public function testHandleExceptiosnReturnsEarlyIfErrorIsNotCorrectError()
+    public function testHandleErrorsReturnsEarlyIfErrorIsNotAllowed()
     {
         $l = $this->l;
         $e = $this->e;
 
         $e->setError(MvcEvent::ERROR_EXCEPTION);
-        $this->assertNull($l->handleErrors($e));
+        $l->handleErrors($e);
+        $this->assertNull($e->getModel());
 
         $e->setError(MvcEvent::ERROR_NO_ROUTE);
-        $this->assertNotNull($l->handleErrors($e));
+        $l->handleErrors($e);
+        $this->assertNotNull($e->getModel());
     }
 
     /**
@@ -76,18 +78,14 @@ class HandleErrorsListenerTest extends \PHPUnit_Framework_TestCase
         $e->setError(MvcEvent::ERROR_EXCEPTION);
 
         $i = $e->getApplication()->getInjector();
-        /** @var \Spiffy\Mvc\View\ViewManager $vm */
-        $vm = $i->nvoke('view_manager');
+        /** @var \Spiffy\Mvc\ViewManager $vm */
+        $vm = $i->nvoke('view-manager');
 
-        $result = $l->handleExceptions($e);
-        $model = $e->getViewModel();
+        $l->handleExceptions($e);
+        $model = $e->getModel();
 
-        $this->assertSame($result, $model);
         $this->assertInstanceOf('Spiffy\View\ViewModel', $model);
         $this->assertSame($model->getTemplate(), $vm->getErrorTemplate());
-        $this->assertInstanceOf('Symfony\Component\HttpFoundation\Response', $e->getResponse());
-        $this->assertSame(500, $e->getResponse()->getStatusCode());
-        $this->assertSame($model, $e->getResult());
     }
 
     /**
@@ -104,18 +102,14 @@ class HandleErrorsListenerTest extends \PHPUnit_Framework_TestCase
         $e->setRouteMatch($rm);
 
         $i = $e->getApplication()->getInjector();
-        /** @var \Spiffy\Mvc\View\ViewManager $vm */
-        $vm = $i->nvoke('view_manager');
+        /** @var \Spiffy\Mvc\ViewManager $vm */
+        $vm = $i->nvoke('view-manager');
 
-        $result = $l->handleErrors($e);
-        $model = $e->getViewModel();
+        $l->handleErrors($e);
+        $model = $e->getModel();
 
-        $this->assertSame($result, $model);
         $this->assertInstanceOf('Spiffy\View\ViewModel', $model);
         $this->assertSame($model->getTemplate(), $vm->getNotFoundTemplate());
-        $this->assertInstanceOf('Symfony\Component\HttpFoundation\Response', $e->getResponse());
-        $this->assertSame(404, $e->getResponse()->getStatusCode());
-        $this->assertSame($model, $e->getResult());
         $this->assertArrayHasKey('controller', $model->getVariables());
     }
 
@@ -133,18 +127,14 @@ class HandleErrorsListenerTest extends \PHPUnit_Framework_TestCase
         $e->setRouteMatch($rm);
 
         $i = $e->getApplication()->getInjector();
-        /** @var \Spiffy\Mvc\View\ViewManager $vm */
-        $vm = $i->nvoke('view_manager');
+        /** @var \Spiffy\Mvc\ViewManager $vm */
+        $vm = $i->nvoke('view-manager');
 
-        $result = $l->handleErrors($e);
-        $model = $e->getViewModel();
+        $l->handleErrors($e);
+        $model = $e->getModel();
 
-        $this->assertSame($result, $model);
         $this->assertInstanceOf('Spiffy\View\ViewModel', $model);
         $this->assertSame($model->getTemplate(), $vm->getNotFoundTemplate());
-        $this->assertInstanceOf('Symfony\Component\HttpFoundation\Response', $e->getResponse());
-        $this->assertSame(404, $e->getResponse()->getStatusCode());
-        $this->assertSame($model, $e->getResult());
         $this->assertArrayHasKey('controller', $model->getVariables());
         $this->assertArrayHasKey('action', $model->getVariables());
     }
@@ -160,18 +150,14 @@ class HandleErrorsListenerTest extends \PHPUnit_Framework_TestCase
         $e->setError(MvcEvent::ERROR_NO_ROUTE);
 
         $i = $e->getApplication()->getInjector();
-        /** @var \Spiffy\Mvc\View\ViewManager $vm */
-        $vm = $i->nvoke('view_manager');
+        /** @var \Spiffy\Mvc\ViewManager $vm */
+        $vm = $i->nvoke('view-manager');
 
-        $result = $l->handleErrors($e);
-        $model = $e->getViewModel();
+        $l->handleErrors($e);
+        $model = $e->getModel();
 
-        $this->assertSame($result, $model);
         $this->assertInstanceOf('Spiffy\View\ViewModel', $model);
         $this->assertSame($model->getTemplate(), $vm->getNotFoundTemplate());
-        $this->assertInstanceOf('Symfony\Component\HttpFoundation\Response', $e->getResponse());
-        $this->assertSame(404, $e->getResponse()->getStatusCode());
-        $this->assertSame($model, $e->getResult());
         $this->assertArrayNotHasKey('controller', $model->getVariables());
         $this->assertArrayNotHasKey('action', $model->getVariables());
     }
@@ -182,7 +168,7 @@ class HandleErrorsListenerTest extends \PHPUnit_Framework_TestCase
 
         $app = new Application();
         $i = $app->getInjector();
-        $i->nject('view_manager', new ViewManager(new TestStrategy()));
+        $i->nject('view-manager', new ViewManager(new TestStrategy()));
 
         $this->e = new MvcEvent($app);
     }

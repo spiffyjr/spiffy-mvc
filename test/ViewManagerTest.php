@@ -1,15 +1,14 @@
 <?php
 
-namespace Spiffy\Mvc\View;
+namespace Spiffy\Mvc;
+
 use Spiffy\Event\EventManager;
-use Spiffy\Mvc\Application;
-use Spiffy\Mvc\MvcEvent;
 use Spiffy\Mvc\TestAsset\TestStrategy;
-use Spiffy\View\TwigRenderer;
-use Spiffy\View\TwigResolver;
+use Spiffy\View\ViewModel;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
- * @coversDefaultClass \Spiffy\Mvc\View\ViewManager
+ * @coversDefaultClass \Spiffy\Mvc\ViewManager
  */
 class ViewManagerTest extends \PHPUnit_Framework_TestCase
 {
@@ -60,11 +59,34 @@ class ViewManagerTest extends \PHPUnit_Framework_TestCase
             ]
         ]);
 
-        $vm = $this->vm;
-        $vm->onBootstrap($this->event);
-        $vm->onRender($this->event);
+        $e = $this->event;
+        $e->setModel(new ViewModel());
 
-        $this->assertSame('rendered', $this->event->getResult());
+        $vm = $this->vm;
+        $vm->onBootstrap($e);
+        $vm->onRender($e);
+
+        $this->assertSame('rendered', $e->getRenderResult());
+    }
+
+    /**
+     * @covers ::onRender
+     */
+    public function testCanRenderReturnsIfResponseExists()
+    {
+        $e = $this->event;
+        $e->setResponse(new Response());
+
+        $this->assertNull($this->vm->onRender($e));
+    }
+
+    /**
+     * @covers ::onRender
+     */
+    public function testCanRenderReturnsIfNoViewModel()
+    {
+        $e = $this->event;
+        $this->assertNull($this->vm->onRender($e));
     }
 
     /**
@@ -81,6 +103,7 @@ class ViewManagerTest extends \PHPUnit_Framework_TestCase
         ]);
 
         $e = $this->event;
+        $e->setModel(new ViewModel());
 
         $vm = $this->vm;
         $vm->onBootstrap($this->event);
@@ -105,11 +128,14 @@ class ViewManagerTest extends \PHPUnit_Framework_TestCase
             ]
         ]);
 
+        $e = $this->event;
+        $e->setModel(new ViewModel());
+
         $vm = $this->vm;
         $vm->onBootstrap($this->event);
         $vm->onRender($this->event);
 
-        $this->assertSame('rendered', $this->event->getResult());
+        $this->assertSame('rendered', $this->event->getRenderResult());
     }
 
     /**

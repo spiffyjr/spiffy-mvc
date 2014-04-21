@@ -38,26 +38,16 @@ class HandleErrorsListener implements Listener
     {
         $error = $e->getError();
         if ($error !== MvcEvent::ERROR_EXCEPTION) {
-            return null;
+            return;
         }
 
         $i = $e->getApplication()->getInjector();
-        $vm = $i->nvoke('view_manager');
+        $vm = $i->nvoke('view-manager');
 
         $model = new ViewModel(['exception' => $e->get('exception')]);
         $model->setTemplate($vm->getErrorTemplate());
 
-        $response = $e->getResponse();
-        if (!$response instanceof Response) {
-            $response = new Response();
-        }
-
-        $response->setStatusCode(500);
-        $e->setResponse($response);
-        $e->setViewModel($model);
-        $e->setResult($model);
-
-        return $model;
+        $e->setModel($model);
     }
 
     /**
@@ -72,7 +62,7 @@ class HandleErrorsListener implements Listener
         }
 
         $i = $e->getApplication()->getInjector();
-        $vm = $i->nvoke('view_manager');
+        $vm = $i->nvoke('view-manager');
 
         $params = ['error' => $error];
 
@@ -91,16 +81,6 @@ class HandleErrorsListener implements Listener
         $model = new ViewModel($params);
         $model->setTemplate($vm->getNotFoundTemplate());
 
-        $response = $e->getResponse();
-        if (!$response instanceof Response) {
-            $response = new Response();
-        }
-
-        $response->setStatusCode(404);
-        $e->setResponse($response);
-        $e->setViewModel($model);
-        $e->setResult($model);
-
-        return $model;
+        $e->setModel($model);
     }
 }

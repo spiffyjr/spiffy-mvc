@@ -1,13 +1,15 @@
 <?php
 
-namespace Spiffy\Mvc\View;
+namespace Spiffy\Mvc;
 
 use Spiffy\Event\Listener;
 use Spiffy\Event\Manager;
 use Spiffy\Inject\Injector;
 use Spiffy\Mvc\MvcEvent;
+use Spiffy\View\Model;
 use Spiffy\View\Strategy;
 use Spiffy\View\ViewModel;
+use Symfony\Component\HttpFoundation\Response;
 
 class ViewManager implements Listener
 {
@@ -80,12 +82,21 @@ class ViewManager implements Listener
 
     /**
      * @param MvcEvent $e
+     * @return null|string
      */
     public function onRender(MvcEvent $e)
     {
-        $model = $e->getViewModel();
-        $result = null;
+        // If the response is set we assume the request is finished and short-circuit.
+        if ($e->getResponse() instanceof Response) {
+            return;
+        }
 
+        $model = $e->getModel();
+        if (!$model instanceof Model) {
+            return;
+        }
+
+        $result = null;
         foreach ($this->strategies as $strategy) {
             if (!$strategy->canRender($model)) {
                 continue;
@@ -99,26 +110,22 @@ class ViewManager implements Listener
                 $e->set('exception', $ex);
                 $e->getApplication()->events()->fire($e);
 
-                if (!$e->getViewModel()) {
-                    $model = new ViewModel();
-                    $e->setViewModel($model);
-                }
-
                 $model->setTemplate($this->getErrorTemplate());
                 $model->setVariables($e->getParams());
 
-                $result = $this->defaultStrategy->render($model);
+                break;
             }
 
             if (null !== $result) {
                 break;
             }
         }
+
         if (null === $result) {
             $result = $this->defaultStrategy->render($model);
         }
 
-        $e->setResult($result);
+        $e->setRenderResult($result);
     }
 
     /**
