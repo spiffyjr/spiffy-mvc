@@ -12,7 +12,7 @@ class EmptyViewStrategy implements Strategy
      */
     public function canRender($nameOrModel)
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,6 +22,6 @@ class EmptyViewStrategy implements Strategy
      */
     public function render($nameOrModel, array $variables = [])
     {
-        return '';
+        return sprintf('EmptyViewStrategy: no renderer is available for %s', $nameOrModel);
     }
 }

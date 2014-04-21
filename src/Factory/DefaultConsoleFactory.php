@@ -27,14 +27,30 @@ class DefaultConsoleFactory
 
         /** @var \Spiffy\Package\PackageManager $pm */
         $pm = $app->getInjector()->get('package-manager');
+        $finder = $this->createFinder($pm->getPackages());
 
+        try {
+            $finder->getIterator();
+        } catch (\LogicException $ex){
+            return;
+        }
+
+        $this->addCommands($finder, $console);
+    }
+
+    /**
+     * @param \ArrayObject $packages
+     * @return Finder
+     */
+    protected function createFinder(\ArrayObject $packages)
+    {
         $finder = new Finder();
         $finder
             ->files()
             ->ignoreUnreadableDirs()
             ->name('*Command.php');
 
-        foreach ($pm->getPackages() as $name => $package) {
+        foreach ($packages as $package) {
             $refl = new \ReflectionClass($package);
             $dir = realpath(dirname($refl->getFileName()) . '/Command');
 
@@ -45,12 +61,16 @@ class DefaultConsoleFactory
             $finder->in($dir);
         }
 
-        try {
-            $finder->getIterator();
-        } catch (\LogicException $ex){
-            return;
-        }
+        return $finder;
+    }
 
+    /**
+     * @param Finder $finder
+     * @param ConsoleApplication $console
+     * @codeCoverageIgnore Ignored because get_declared_classes() is hard to test. If you have any idea I'm open!
+     */
+    protected function addCommands(Finder $finder, ConsoleApplication $console)
+    {
         foreach ($finder as $file) {
             $classes = get_declared_classes();
             include_once $file;

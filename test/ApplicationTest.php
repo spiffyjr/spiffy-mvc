@@ -1,6 +1,7 @@
 <?php
 
 namespace Spiffy\Mvc;
+
 use Symfony\Component\HttpFoundation\Request;
 
 /**
