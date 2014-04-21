@@ -42,7 +42,7 @@ class ApplicationTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers ::run
+     * @covers ::run, ::bootstrap
      */
     public function testRunFiresEvents()
     {
