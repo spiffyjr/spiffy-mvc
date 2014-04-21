@@ -42,6 +42,30 @@ class ApplicationTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * @covers ::getName
+     */
+    public function testGetName()
+    {
+        $app = new Application();
+        $this->assertSame('UNKNOWN', $app->getName());
+
+        $app->setOptions(['name' => 'foo']);
+        $this->assertSame('foo', $app->getName());
+    }
+
+    /**
+     * @covers ::getVersion
+     */
+    public function testGetVersion()
+    {
+        $app = new Application();
+        $this->assertSame('UNKNOWN', $app->getVersion());
+
+        $app->setOptions(['version' => '1.0']);
+        $this->assertSame('1.0', $app->getVersion());
+    }
+
+    /**
      * @covers ::run, ::bootstrap
      */
     public function testRunFiresEvents()
