@@ -31,7 +31,7 @@ class DefaultConsoleFactory
 
         try {
             $finder->getIterator();
-        } catch (\LogicException $ex){
+        } catch (\LogicException $ex) {
             return;
         }
 
