@@ -32,6 +32,7 @@ class Application implements ConfigProvider, OptionsProvider
         try {
             return $this->getOption('name');
         } catch (MissingOptionException $ex) {
+            // intentionally left blank
         }
         return 'UNKNOWN';
     }
@@ -44,6 +45,7 @@ class Application implements ConfigProvider, OptionsProvider
         try {
             return $this->getOption('version');
         } catch (MissingOptionException $ex) {
+            // intentionally left blank
         }
         return 'UNKNOWN';
     }

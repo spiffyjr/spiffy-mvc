@@ -25,7 +25,7 @@ class DefaultApplicationFactory
 
         $this->injectServices($app, $pm);
         $this->injectConfig($app, $config);
-        $this->injectPackages($app, $debug);
+        $this->injectPackages($app);
         $this->injectEvents($app);
 
         $this->injectPlugins($app, $app->getInjector()['spiffy.mvc']);
