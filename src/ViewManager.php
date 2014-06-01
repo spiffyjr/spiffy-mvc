@@ -2,15 +2,16 @@
 
 namespace Spiffy\Mvc;
 
-use Spiffy\Event\Listener;
+use Spiffy\Event\Plugin;
 use Spiffy\Event\Manager;
 use Spiffy\Inject\Injector;
+use Spiffy\Inject\InjectorUtils;
 use Spiffy\Mvc\MvcEvent;
 use Spiffy\View\Model;
 use Spiffy\View\Strategy;
 use Symfony\Component\HttpFoundation\Response;
 
-class ViewManager implements Listener
+class ViewManager implements Plugin
 {
     /**
      * @var Injector
@@ -49,7 +50,7 @@ class ViewManager implements Listener
      * @param Manager $events
      * @return void
      */
-    public function attach(Manager $events)
+    public function plug(Manager $events)
     {
         $events->on(MvcEvent::EVENT_BOOTSTRAP, [$this, 'onBootstrap']);
         $events->on(MvcEvent::EVENT_RENDER, [$this, 'onRender']);
@@ -61,10 +62,9 @@ class ViewManager implements Listener
     public function onBootstrap(MvcEvent $e)
     {
         $app = $e->getApplication();
+        $i = $this->injector = $app->getInjector();
 
-        $this->injector = $app->getInjector();
-
-        $options = $app->getOption('view_manager');
+        $options = $i['mvc']['view_manager'];
 
         if (isset($options['not_found_template'])) {
             $this->notFoundTemplate = $options['not_found_template'];
@@ -75,7 +75,7 @@ class ViewManager implements Listener
 
         if (isset($options['strategies'])) {
             $this->strategies = (array) $options['strategies'];
-            $this->registerStrategies();
+            $this->registerStrategies($app->events());
         }
     }
 
@@ -86,9 +86,9 @@ class ViewManager implements Listener
     public function onRender(MvcEvent $e)
     {
         // If the response is set we assume the request is finished and short-circuit.
-        if ($e->getResponse() instanceof Response) {
-            return;
-        }
+        //if ($e->getResponse() instanceof Response) {
+            //return;
+        //}
 
         $model = $e->getModel();
         if (!$model instanceof Model) {
@@ -162,7 +162,7 @@ class ViewManager implements Listener
     /**
      * Register strategies.
      */
-    protected function registerStrategies()
+    protected function registerStrategies(Manager $events)
     {
         $i = $this->injector;
         foreach ($this->strategies as $index => &$strategy) {
@@ -171,14 +171,14 @@ class ViewManager implements Listener
                 continue;
             }
 
-            if ($i->has($strategy)) {
-                $strategy = $i->nvoke($strategy);
-            } elseif (class_exists($strategy)) {
-                $strategy = new $strategy();
-            }
+            $strategy = InjectorUtils::get($i, $strategy);
 
             if (!$strategy instanceof Strategy) {
                 unset($this->strategies[$index]);
+            }
+
+            if ($strategy instanceof Plugin) {
+                $events->plug($strategy);
             }
         }
     }

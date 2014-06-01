@@ -14,7 +14,7 @@ class RouterFactory implements ServiceFactory
      */
     public function createService(Injector $i)
     {
-        $routes = $i['spiffy.mvc']['routes'];
+        $routes = $i['mvc']['routes'];
         $r = new Router();
 
         foreach ($routes as $routeName => $params) {
@@ -24,11 +24,12 @@ class RouterFactory implements ServiceFactory
                 $defaults['action'] = $params[2];
             }
 
+            $options = ['defaults' => $defaults];
             if (isset($params[3]) && is_array($params[3])) {
-                $defaults = array_merge($params[3], $defaults);
+                $options = array_merge_recursive($params[3], $options);
             }
 
-            $r->add($routeName, $params[0], ['defaults' => $defaults]);
+            $r->add($routeName, $params[0], $options);
         }
 
         return $r;

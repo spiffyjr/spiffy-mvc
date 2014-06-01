@@ -1,18 +1,18 @@
 <?php
 
-namespace Spiffy\Mvc\Listener;
+namespace Spiffy\Mvc\Plugin;
 
-use Spiffy\Event\Listener;
+use Spiffy\Event\Plugin;
 use Spiffy\Event\Manager;
 use Spiffy\Mvc\MvcEvent;
 use Symfony\Component\HttpFoundation\Response;
 
-class ResponseListener implements Listener
+class ResponsePlugin implements Plugin
 {
     /**
      * {@inheritDoc}
      */
-    public function attach(Manager $events)
+    public function plug(Manager $events)
     {
         $events->on(MvcEvent::EVENT_FINISH, [$this, 'sendResponse']);
     }

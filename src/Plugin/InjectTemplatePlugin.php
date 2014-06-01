@@ -1,20 +1,20 @@
 <?php
 
-namespace Spiffy\Mvc\Listener;
+namespace Spiffy\Mvc\Plugin;
 
-use Spiffy\Event\Listener;
+use Spiffy\Event\Plugin;
 use Spiffy\Event\Manager;
 use Spiffy\Mvc\MvcEvent;
 use Spiffy\Route\RouteMatch;
 use Spiffy\View\Model;
 
-class InjectTemplateListener implements Listener
+class InjectTemplatePlugin implements Plugin
 {
     /**
      * @param Manager $events
      * @return void
      */
-    public function attach(Manager $events)
+    public function plug(Manager $events)
     {
         $events->on(MvcEvent::EVENT_DISPATCH, [$this, 'createViewTemplate'], -110);
     }
@@ -46,7 +46,7 @@ class InjectTemplateListener implements Listener
         }
 
         $i = $e->getApplication()->getInjector();
-        $map = isset($i['spiffy.mvc']['controllers']) ? $i['spiffy.mvc']['controllers'] : [];
+        $map = isset($i['mvc']['controllers']) ? $i['mvc']['controllers'] : [];
         $package = $this->determinePackage($controller, $map);
 
         $model->setTemplate(ltrim(implode('/', [$package, $controller, $action]), '/'));

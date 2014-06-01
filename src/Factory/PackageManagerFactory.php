@@ -3,6 +3,7 @@
 namespace Spiffy\Mvc\Factory;
 
 use Spiffy\Package\PackageManager;
+use Spiffy\Package\Plugin as PackagePlugin;
 
 class PackageManagerFactory
 {
@@ -16,14 +17,6 @@ class PackageManagerFactory
 
         $pm = new PackageManager();
 
-        if (isset($config['override_pattern'])) {
-            $pm->setOverridePattern($config['override_pattern']);
-        }
-
-        if (isset($config['override_flags'])) {
-            $pm->setOverrideFlags($config['override_flags']);
-        }
-
         foreach ($packages as $packageName => $fqcn) {
             if (is_numeric($packageName)) {
                 $packageName = $fqcn;
@@ -32,7 +25,10 @@ class PackageManagerFactory
             $pm->add($packageName, $fqcn);
         }
 
-        $pm->load();
+        $events = $pm->events();
+        $events->plug(new PackagePlugin\ConfigMergePlugin($config['override_pattern'], $config['override_flags']));
+        $events->plug(new PackagePlugin\LoadModulesPlugin());
+        $events->plug(new PackagePlugin\OptionsProviderPlugin());
 
         return $pm;
     }

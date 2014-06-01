@@ -10,19 +10,19 @@ use Symfony\Component\HttpFoundation\Response;
 
 class MvcEvent extends Event
 {
-    const ERROR_NO_CONTROLLER = 'spiffy.mvc:error.no_controller';
-    const ERROR_NO_ACTION = 'spiffy.mvc:error.no_action';
-    const ERROR_NO_ROUTE = 'spiffy.mvc:error.no_route';
-    const ERROR_EXCEPTION = 'spiffy.mvc:error.exception';
+    const ERROR_NO_CONTROLLER = 'mvc:error.no_controller';
+    const ERROR_NO_ACTION = 'mvc:error.no_action';
+    const ERROR_NO_ROUTE = 'mvc:error.no_route';
+    const ERROR_EXCEPTION = 'mvc:error.exception';
 
-    const EVENT_BOOTSTRAP = 'spiffy.mvc:bootstrap';
-    const EVENT_DISPATCH = 'spiffy.mvc:dispatch';
-    const EVENT_DISPATCH_ERROR = 'spiffy.mvc:dispatch.error';
-    const EVENT_FINISH = 'spiffy.mvc:finish';
-    const EVENT_RENDER = 'spiffy.mvc:render';
-    const EVENT_RENDER_ERROR = 'spiffy.mvc:render.error';
-    const EVENT_ROUTE = 'spiffy.mvc:route';
-    const EVENT_ROUTE_ERROR = 'spiffy.mvc:route.error';
+    const EVENT_BOOTSTRAP = 'mvc:bootstrap';
+    const EVENT_DISPATCH = 'mvc:dispatch';
+    const EVENT_DISPATCH_ERROR = 'mvc:dispatch.error';
+    const EVENT_FINISH = 'mvc:finish';
+    const EVENT_RENDER = 'mvc:render';
+    const EVENT_RENDER_ERROR = 'mvc:render.error';
+    const EVENT_ROUTE = 'mvc:route';
+    const EVENT_ROUTE_ERROR = 'mvc:route.error';
 
     /**
      * @var Application

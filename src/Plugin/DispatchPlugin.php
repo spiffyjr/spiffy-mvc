@@ -1,21 +1,22 @@
 <?php
 
-namespace Spiffy\Mvc\Listener;
+namespace Spiffy\Mvc\Plugin;
 
 use Spiffy\Dispatch\Dispatcher;
-use Spiffy\Event\Listener;
+use Spiffy\Event\Plugin;
 use Spiffy\Event\Manager;
 use Spiffy\Mvc\MvcEvent;
 use Spiffy\Route\RouteMatch;
+use Spiffy\View\Model;
 use Symfony\Component\HttpFoundation\Response;
 
-class DispatchListener implements Listener
+class DispatchPlugin implements Plugin
 {
     /**
      * @param Manager $events
      * @return void
      */
-    public function attach(Manager $events)
+    public function plug(Manager $events)
     {
         $events->on(MvcEvent::EVENT_DISPATCH, [$this, 'onDispatch'], 100);
     }
@@ -63,6 +64,10 @@ class DispatchListener implements Listener
 
         if ($result instanceof Response) {
             $e->setResponse($result);
+        }
+
+        if ($result instanceof Model) {
+            $e->setModel($result);
         }
     }
 

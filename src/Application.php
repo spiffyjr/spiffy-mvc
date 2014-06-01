@@ -9,10 +9,9 @@ use Spiffy\Package\Feature\Exception\MissingOptionException;
 use Spiffy\Package\Feature\OptionsProvider;
 use Spiffy\Package\Feature\OptionsProviderTrait;
 
-class Application implements ConfigProvider, OptionsProvider
+class Application implements ConfigProvider
 {
     use EventsAwareTrait;
-    use OptionsProviderTrait;
 
     /**
      * @var MvcEvent
@@ -23,32 +22,6 @@ class Application implements ConfigProvider, OptionsProvider
      * @var Injector
      */
     protected $injector;
-
-    /**
-     * @return string
-     */
-    public function getName()
-    {
-        try {
-            return $this->getOption('name');
-        } catch (MissingOptionException $ex) {
-            // intentionally left blank
-        }
-        return 'UNKNOWN';
-    }
-
-    /**
-     * @return string
-     */
-    public function getVersion()
-    {
-        try {
-            return $this->getOption('version');
-        } catch (MissingOptionException $ex) {
-            // intentionally left blank
-        }
-        return 'UNKNOWN';
-    }
 
     /**
      * @return MvcEvent
@@ -62,6 +35,14 @@ class Application implements ConfigProvider, OptionsProvider
             $this->event->setRequest($i->nvoke('request'));
         }
         return $this->event;
+    }
+
+    /**
+     * @param \Spiffy\Inject\Injector $injector
+     */
+    public function setInjector($injector)
+    {
+        $this->injector = $injector;
     }
 
     /**
@@ -87,7 +68,7 @@ class Application implements ConfigProvider, OptionsProvider
 
     /**
      * Runs the application by firing the bootstrap, route,
-     * dispatch, render, and response listeners.
+     * dispatch, render, and response plugins.
      */
     public function run()
     {

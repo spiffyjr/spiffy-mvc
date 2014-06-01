@@ -15,7 +15,7 @@ class RouterFactoryTest extends \PHPUnit_Framework_TestCase
     public function testCreateService()
     {
         $i = new Injector();
-        $i['spiffy.mvc'] = [
+        $i['mvc'] = [
             'routes' => [
                 'home' => ['/', 'home', 'index'],
                 'defaults' => ['/defaults', 'defaults', 'index', ['foo' => 'bar']]

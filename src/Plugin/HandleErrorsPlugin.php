@@ -1,13 +1,13 @@
 <?php
 
-namespace Spiffy\Mvc\Listener;
+namespace Spiffy\Mvc\Plugin;
 
-use Spiffy\Event\Listener;
+use Spiffy\Event\Plugin;
 use Spiffy\Event\Manager;
 use Spiffy\Mvc\MvcEvent;
 use Spiffy\View\ViewModel;
 
-class HandleErrorsListener implements Listener
+class HandleErrorsPlugin implements Plugin
 {
     /**
      * @var array
@@ -21,7 +21,7 @@ class HandleErrorsListener implements Listener
     /**
      * {@inheritDoc}
      */
-    public function attach(Manager $events)
+    public function plug(Manager $events)
     {
         $events->on(MvcEvent::EVENT_DISPATCH_ERROR, [$this, 'handleErrors']);
         $events->on(MvcEvent::EVENT_DISPATCH_ERROR, [$this, 'handleExceptions']);

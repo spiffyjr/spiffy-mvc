@@ -1,6 +1,6 @@
 <?php
 
-namespace Spiffy\Mvc\Listener;
+namespace Spiffy\Mvc\Plugin;
 
 use Spiffy\Dispatch\Dispatcher;
 use Spiffy\Event\EventManager;
@@ -11,9 +11,9 @@ use Spiffy\Route\RouteMatch;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
- * @coversDefaultClass \Spiffy\Mvc\Listener\ResponseListener
+ * @coversDefaultClass \Spiffy\Mvc\Plugin\ResponsePlugin
  */
-class ResponseListenerTest extends \PHPUnit_Framework_TestCase
+class ResponsePluginTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * @var MvcEvent
@@ -21,7 +21,7 @@ class ResponseListenerTest extends \PHPUnit_Framework_TestCase
     protected $e;
 
     /**
-     * @var ResponseListener
+     * @var ResponsePlugin
      */
     protected $l;
 
@@ -79,7 +79,7 @@ class ResponseListenerTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $this->l = new ResponseListener();
+        $this->l = new ResponsePlugin();
 
         $app = new Application();
         $i = $app->getInjector();

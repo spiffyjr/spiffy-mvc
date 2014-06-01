@@ -1,15 +1,15 @@
 <?php
 
-namespace Spiffy\Mvc\Listener;
+namespace Spiffy\Mvc\Plugin;
 
 use Spiffy\Event\EventManager;
 use Spiffy\Mvc\Application;
 use Spiffy\Mvc\MvcEvent;
 
 /**
- * @coversDefaultClass \Spiffy\Mvc\Listener\CreateViewModelListener
+ * @coversDefaultClass \Spiffy\Mvc\Plugin\CreateViewModelPlugin
  */
-class CreateViewModelListenerTest extends \PHPUnit_Framework_TestCase
+class CreateViewModelPluginTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * @covers ::attach
@@ -17,7 +17,7 @@ class CreateViewModelListenerTest extends \PHPUnit_Framework_TestCase
     public function testAttach()
     {
         $events = new EventManager();
-        $l = new CreateViewModelListener();
+        $l = new CreateViewModelPlugin();
         $l->attach($events);
 
         $this->assertCount(1, $events->getEvents());
@@ -29,7 +29,7 @@ class CreateViewModelListenerTest extends \PHPUnit_Framework_TestCase
      */
     public function testModelFromArray()
     {
-        $l = new CreateViewModelListener();
+        $l = new CreateViewModelPlugin();
         $event = new MvcEvent(new Application());
 
         $l->createModelFromArray($event);
@@ -48,7 +48,7 @@ class CreateViewModelListenerTest extends \PHPUnit_Framework_TestCase
      */
     public function testModelFromNull()
     {
-        $l = new CreateViewModelListener();
+        $l = new CreateViewModelPlugin();
         $event = new MvcEvent(new Application());
         $event->setDispatchResult(['foo' => 'bar']);
 

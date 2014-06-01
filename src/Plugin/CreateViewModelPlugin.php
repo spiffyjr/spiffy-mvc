@@ -1,18 +1,18 @@
 <?php
 
-namespace Spiffy\Mvc\Listener;
+namespace Spiffy\Mvc\Plugin;
 
-use Spiffy\Event\Listener;
+use Spiffy\Event\Plugin;
 use Spiffy\Event\Manager;
 use Spiffy\Mvc\MvcEvent;
 use Spiffy\View\ViewModel;
 
-class CreateViewModelListener implements Listener
+class CreateViewModelPlugin implements Plugin
 {
     /**
      * {@inheritDoc}
      */
-    public function attach(Manager $events)
+    public function plug(Manager $events)
     {
         $events->on(MvcEvent::EVENT_DISPATCH, [$this, 'createModelFromArray'], -90);
         $events->on(MvcEvent::EVENT_DISPATCH, [$this, 'createModelFromNull'], -90);

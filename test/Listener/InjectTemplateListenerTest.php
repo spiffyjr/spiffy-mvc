@@ -1,6 +1,6 @@
 <?php
 
-namespace Spiffy\Mvc\Listener;
+namespace Spiffy\Mvc\Plugin;
 use Spiffy\Event\EventManager;
 use Spiffy\Mvc\Application;
 use Spiffy\Mvc\MvcEvent;
@@ -9,9 +9,9 @@ use Spiffy\Route\RouteMatch;
 use Spiffy\View\ViewModel;
 
 /**
- * @coversDefaultClass \Spiffy\Mvc\Listener\InjectTemplateListener
+ * @coversDefaultClass \Spiffy\Mvc\Plugin\InjectTemplatePlugin
  */
-class InjectTemplateListenerTest extends \PHPUnit_Framework_TestCase
+class InjectTemplatePluginTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * @var MvcEvent
@@ -19,7 +19,7 @@ class InjectTemplateListenerTest extends \PHPUnit_Framework_TestCase
     protected $e;
 
     /**
-     * @var InjectTemplateListener
+     * @var InjectTemplatePlugin
      */
     protected $l;
 
@@ -129,7 +129,7 @@ class InjectTemplateListenerTest extends \PHPUnit_Framework_TestCase
         $l = $this->l;
         $e = $this->e;
         $i = $e->getApplication()->getInjector();
-        $i['spiffy.mvc'] = ['controllers' => ['foo' => 'Application\Foo\FooController']];
+        $i['mvc'] = ['controllers' => ['foo' => 'Application\Foo\FooController']];
 
         $match = new RouteMatch(new Route('home', '/'));
         $match->set('controller', 'foo');
@@ -145,11 +145,11 @@ class InjectTemplateListenerTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $this->l = new InjectTemplateListener();
+        $this->l = new InjectTemplatePlugin();
 
         $app = new Application();
         $i = $app->getInjector();
-        $i['spiffy.mvc'] = [];
+        $i['mvc'] = [];
 
         $this->e = new MvcEvent($app);
     }

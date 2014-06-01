@@ -14,7 +14,7 @@ class Package implements ConfigProvider, PathProvider
     public function getConfig()
     {
         return [
-            'spiffy.mvc' => [
+            'mvc' => [
                 'plugins' => [
                     'Spiffy\Mvc\TestAsset\TestPlugin',
                     'plugin',

@@ -2,9 +2,10 @@
 
 namespace Spiffy\Mvc\Factory;
 
+use Spiffy\Inject\Injector;
+use Spiffy\Inject\InjectorUtils;
 use Spiffy\Mvc\Application;
-use Spiffy\Mvc\Listener as MvcListener;
-use Spiffy\Package\Feature\OptionsProvider;
+use Spiffy\Mvc\Plugin;
 use Spiffy\Package\PackageManager;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -20,28 +21,31 @@ class DefaultApplicationFactory
 
         $debug = isset($_ENV['debug']) && $_ENV['debug'] == true;
 
-        $pm = $this->createPackageManager($config, $debug);
-        $app = $pm->getPackage('spiffy.mvc');
+        $i = new Injector();
+        $pm = $this->createPackageManager($i, $config, $debug);
+
+        /** @var \Spiffy\Mvc\Application $app */
+        $app = $pm->getPackage('mvc');
+        $app->setInjector($i);
 
         $this->injectServices($app, $pm);
         $this->injectConfig($app, $config);
-        $this->injectPackages($app);
         $this->injectEvents($app);
-
-        $this->injectPlugins($app, $app->getInjector()['spiffy.mvc']);
+        $this->injectPlugins($app, $app->getInjector()['mvc']);
 
         return $app;
     }
 
     /**
+     * @param Injector $i
      * @param array $config
      * @param bool $debug
      * @return PackageManager
      */
-    protected function createPackageManager(array $config, $debug)
+    protected function createPackageManager(Injector $i, array $config, $debug)
     {
         $tmp = isset($config['packages']) ? (array) $config['packages'] : [];
-        $packages = ['spiffy.mvc' => 'Spiffy\\Mvc\\Application'];
+        $packages = ['mvc' => 'Spiffy\\Mvc\\Application'];
         $config['packages'] = array_merge($packages, $tmp);
 
         foreach ($config['packages'] as $k => &$package) {
@@ -55,20 +59,25 @@ class DefaultApplicationFactory
         }
 
         $pmf = new PackageManagerFactory();
-        return $pmf->createService($config);
+        $pm = $pmf->createService($config);
+        $pm->events()->plug(new Plugin\PackageManager\MvcPlugin($i));
+        $pm->load();
+
+        return $pm;
     }
 
     /**
      * @param Application $app
-     * @param array $config
+     * @param array $applicationConfig
      */
-    protected function injectConfig(Application $app, array $config)
+    protected function injectConfig(Application $app, array $applicationConfig)
     {
         $i = $app->getInjector();
         $pm = $i->nvoke('package-manager');
+        $mergedConfig = $pm->getMergedConfig();
 
-        $i['application-config'] = $config;
-        $i['config'] = $pm->getMergedConfig();
+        $i['application-config'] = $applicationConfig;
+        $i['mvc'] = $mergedConfig['mvc'];
     }
 
     /**
@@ -79,13 +88,14 @@ class DefaultApplicationFactory
         $i = $app->getInjector();
 
         $events = $app->events();
-        $events->attach(new MvcListener\DispatchListener());
-        $events->attach(new MvcListener\CreateViewModelListener());
-        $events->attach(new MvcListener\InjectTemplateListener());
-        $events->attach(new MvcListener\HandleErrorsListener());
-        $events->attach(new MvcListener\RouteListener());
-        $events->attach(new MvcListener\ResponseListener());
-        $events->attach($i->nvoke('view-manager'));
+        $events->plug(new Plugin\BootstrapPlugin());
+        $events->plug(new Plugin\CreateViewModelPlugin());
+        $events->plug(new Plugin\DispatchPlugin());
+        $events->plug(new Plugin\HandleErrorsPlugin());
+        $events->plug(new Plugin\InjectTemplatePlugin());
+        $events->plug(new Plugin\ResponsePlugin());
+        $events->plug(new Plugin\RoutePlugin());
+        $events->plug($i->nvoke('view-manager'));
     }
 
     /**
@@ -97,34 +107,11 @@ class DefaultApplicationFactory
         $i = $app->getInjector();
 
         $i->nject('dispatcher', new DispatcherFactory());
+        $i->nject('injector', $i);
         $i->nject('request', Request::createFromGlobals());
         $i->nject('router', new RouterFactory());
         $i->nject('package-manager', $pm);
         $i->nject('view-manager', new ViewManagerFactory());
-
-        foreach ((array) $app->getOption('services') as $serviceName => $spec) {
-            $i->nject($serviceName, $spec);
-        }
-    }
-
-    /**
-     * @param Application $app
-     */
-    protected function injectPackages(Application $app)
-    {
-        $i = $app->getInjector();
-
-        /** @var \Spiffy\Package\PackageManager $pm */
-        $pm = $i->nvoke('package-manager');
-
-        // inject all packages (and options if they exist)
-        foreach ($pm->getPackages() as $packageName => $package) {
-            $i->nject($packageName, $package);
-
-            if ($package instanceof OptionsProvider) {
-                $i[$packageName] = $package->getOptions();
-            }
-        }
     }
 
     /**
@@ -141,15 +128,7 @@ class DefaultApplicationFactory
         $i = $app->getInjector();
 
         foreach ($config['plugins'] as $plugin) {
-            if (is_string($plugin)) {
-                if ($i->has($plugin)) {
-                    $plugin = $i->get($plugin);
-                } else {
-                    $plugin = new $plugin;
-                }
-            }
-
-            $events->attach($plugin);
+            $events->plug(InjectorUtils::get($i, $plugin));
         }
     }
 

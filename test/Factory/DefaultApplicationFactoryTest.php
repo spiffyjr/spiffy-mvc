@@ -31,7 +31,7 @@ class DefaultApplicationFactoryTest extends \PHPUnit_Framework_TestCase
         $result = $df->create([]);
         $this->assertInstanceOf('Spiffy\Mvc\Application', $result);
 
-        $result = $df->create(['packages' => 'spiffy.mvc.test-asset.application']);
+        $result = $df->create(['packages' => 'mvc.test-asset.application']);
         $events = $result->events()->getEvents(MvcEvent::EVENT_DISPATCH);
         /** @var \Closure $plugin */
         $plugin = $events->extract();
@@ -51,7 +51,7 @@ class DefaultApplicationFactoryTest extends \PHPUnit_Framework_TestCase
     public function testInjectServices()
     {
         $df = new DefaultApplicationFactory();
-        $result = $df->create(['packages' => 'spiffy.mvc.test-asset.application']);
+        $result = $df->create(['packages' => 'mvc.test-asset.application']);
         $i = $result->getInjector();
 
         $this->assertInstanceOf('Spiffy\Mvc\Application', $result);
@@ -78,7 +78,7 @@ class DefaultApplicationFactoryTest extends \PHPUnit_Framework_TestCase
 
         $this->assertInstanceOf('Spiffy\Mvc\Application', $result);
 
-        // spiffy.mvc is registered so count is three, not two.
+        // mvc is registered so count is three, not two.
         $this->assertCount(3, $pm->getPackages());
 
         $config['environment']['debug'] = true;

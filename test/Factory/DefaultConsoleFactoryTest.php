@@ -20,7 +20,7 @@ class DefaultConsoleFactoryTest extends \PHPUnit_Framework_TestCase
         /** @var \Spiffy\Mvc\Application $result */
         $result = $df->create([
             'packages' => [
-                'spiffy.mvc.test-asset.application',
+                'mvc.test-asset.application',
             ]
         ]);
         $this->assertInstanceOf('Spiffy\Mvc\ConsoleApplication', $result);

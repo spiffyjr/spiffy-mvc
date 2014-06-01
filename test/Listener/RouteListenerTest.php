@@ -1,6 +1,6 @@
 <?php
 
-namespace Spiffy\Mvc\Listener;
+namespace Spiffy\Mvc\Plugin;
 
 use Spiffy\Event\EventManager;
 use Spiffy\Mvc\Application;
@@ -11,9 +11,9 @@ use Spiffy\Route\Router;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
- * @coversDefaultClass \Spiffy\Mvc\Listener\RouteListener
+ * @coversDefaultClass \Spiffy\Mvc\Plugin\RoutePlugin
  */
-class RouteListenerTest extends \PHPUnit_Framework_TestCase
+class RoutePluginTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * @var MvcEvent
@@ -21,7 +21,7 @@ class RouteListenerTest extends \PHPUnit_Framework_TestCase
     protected $e;
 
     /**
-     * @var RouteListener
+     * @var RoutePlugin
      */
     protected $l;
 
@@ -88,7 +88,7 @@ class RouteListenerTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $this->l = new RouteListener();
+        $this->l = new RoutePlugin();
         $app = new Application();
         $this->e = new MvcEvent($app);
     }

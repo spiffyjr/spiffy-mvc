@@ -1,6 +1,6 @@
 <?php
 
-namespace Spiffy\Mvc\Listener;
+namespace Spiffy\Mvc\Plugin;
 
 use Spiffy\Dispatch\Dispatcher;
 use Spiffy\Event\EventManager;
@@ -11,9 +11,9 @@ use Spiffy\Route\RouteMatch;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
- * @coversDefaultClass \Spiffy\Mvc\Listener\DispatchListener
+ * @coversDefaultClass \Spiffy\Mvc\Plugin\DispatchPlugin
  */
-class DispatchListenerTest extends \PHPUnit_Framework_TestCase
+class DispatchPluginTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * @var MvcEvent
@@ -21,7 +21,7 @@ class DispatchListenerTest extends \PHPUnit_Framework_TestCase
     protected $e;
 
     /**
-     * @var DispatchListener
+     * @var DispatchPlugin
      */
     protected $l;
 
@@ -53,7 +53,7 @@ class DispatchListenerTest extends \PHPUnit_Framework_TestCase
     /**
      * @covers ::onDispatch, ::routeNotFound
      */
-    public function testOnDispatchWithNoRouteMatchListeners()
+    public function testOnDispatchWithNoRouteMatchPlugins()
     {
         $e = $this->e;
         $l = $this->l;
@@ -87,7 +87,7 @@ class DispatchListenerTest extends \PHPUnit_Framework_TestCase
     /**
      * @covers ::onDispatch, ::controllerNotFound
      */
-    public function testOnDispatchWithInvalidControllerListeners()
+    public function testOnDispatchWithInvalidControllerPlugins()
     {
         $e = $this->e;
         $l = $this->l;
@@ -129,7 +129,7 @@ class DispatchListenerTest extends \PHPUnit_Framework_TestCase
     /**
      * @covers ::onDispatch, ::controllerException
      */
-    public function testOnDispatchHandlesExceptionsWithListeners()
+    public function testOnDispatchHandlesExceptionsWithPlugins()
     {
         $e = $this->e;
         $l = $this->l;
@@ -200,7 +200,7 @@ class DispatchListenerTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $this->l = new DispatchListener();
+        $this->l = new DispatchPlugin();
 
         $app = new Application();
         $i = $app->getInjector();

@@ -15,7 +15,7 @@ class DispatcherFactoryTest extends \PHPUnit_Framework_TestCase
     public function testCreateService()
     {
         $i = new Injector();
-        $i['spiffy.mvc'] = [
+        $i['mvc'] = [
             'controllers' => [
                 'test' => 'Spiffy\Mvc\TestAsset\TestController',
             ]

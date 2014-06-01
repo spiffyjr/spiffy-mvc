@@ -1,6 +1,6 @@
 <?php
 
-namespace Spiffy\Mvc\Listener;
+namespace Spiffy\Mvc\Plugin;
 use Spiffy\Event\EventManager;
 use Spiffy\Mvc\Application;
 use Spiffy\Mvc\MvcEvent;
@@ -10,9 +10,9 @@ use Spiffy\Route\Route;
 use Spiffy\Route\RouteMatch;
 
 /**
- * @coversDefaultClass \Spiffy\Mvc\Listener\HandleErrorsListener
+ * @coversDefaultClass \Spiffy\Mvc\Plugin\HandleErrorsPlugin
  */
-class HandleErrorsListenerTest extends \PHPUnit_Framework_TestCase
+class HandleErrorsPluginTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * @var MvcEvent
@@ -20,7 +20,7 @@ class HandleErrorsListenerTest extends \PHPUnit_Framework_TestCase
     protected $e;
 
     /**
-     * @var HandleErrorsListener
+     * @var HandleErrorsPlugin
      */
     protected $l;
 
@@ -30,7 +30,7 @@ class HandleErrorsListenerTest extends \PHPUnit_Framework_TestCase
     public function testAttach()
     {
         $events = new EventManager();
-        $l = new HandleErrorsListener();
+        $l = new HandleErrorsPlugin();
         $l->attach($events);
 
         $this->assertCount(3, $events->getEvents());
@@ -164,7 +164,7 @@ class HandleErrorsListenerTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $this->l = new HandleErrorsListener();
+        $this->l = new HandleErrorsPlugin();
 
         $app = new Application();
         $i = $app->getInjector();

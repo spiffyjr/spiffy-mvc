@@ -1,20 +1,18 @@
 <?php
 
-namespace Spiffy\Mvc\Listener;
+namespace Spiffy\Mvc\Plugin;
 
-use Spiffy\Event\Listener;
+use Spiffy\Event\Plugin;
 use Spiffy\Event\Manager;
 use Spiffy\Mvc\MvcEvent;
-use Spiffy\Route\Router;
-use Symfony\Component\HttpFoundation\Request;
 
-class RouteListener implements Listener
+class RoutePlugin implements Plugin
 {
     /**
      * @param Manager $events
      * @return void
      */
-    public function attach(Manager $events)
+    public function plug(Manager $events)
     {
         $events->on(MvcEvent::EVENT_ROUTE, [$this, 'onRoute'], -100);
     }

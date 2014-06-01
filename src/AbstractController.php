@@ -4,6 +4,7 @@ namespace Spiffy\Mvc;
 
 use Spiffy\Dispatch\Dispatchable;
 use Spiffy\View\ViewModel;
+use Symfony\Component\HttpFoundation\Response;
 
 abstract class AbstractController implements Dispatchable
 {
@@ -72,6 +73,11 @@ abstract class AbstractController implements Dispatchable
     public function getResponse()
     {
         $this->assertDispatched();
+
+        $response = $this->getMvcEvent()->getResponse();
+        if (!$response) {
+            $this->getMvcEvent()->setResponse(new Response());
+        }
         return $this->getMvcEvent()->getResponse();
     }
 

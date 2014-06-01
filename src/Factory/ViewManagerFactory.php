@@ -14,7 +14,7 @@ class ViewManagerFactory implements ServiceFactory
      */
     public function createService(Injector $i)
     {
-        $options = $i['spiffy.mvc']['view_manager'];
+        $options = $i['mvc']['view_manager'];
         $strategy = $options['default_strategy'];
         $strategy = $i->has($strategy) ? $i->nvoke($strategy) : new $strategy();
 

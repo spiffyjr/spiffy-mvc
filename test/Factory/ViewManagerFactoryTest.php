@@ -16,7 +16,7 @@ class ViewManagerFactoryTest extends \PHPUnit_Framework_TestCase
     public function testCreateService()
     {
         $i = new Injector();
-        $i['spiffy.mvc'] = [
+        $i['mvc'] = [
             'view_manager' => [
                 'default_strategy' => 'Spiffy\Mvc\TestAsset\TestStrategy'
             ]
